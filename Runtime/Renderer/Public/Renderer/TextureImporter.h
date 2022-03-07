@@ -7,21 +7,22 @@
 
 namespace Squid {
 namespace Renderer {
+    using namespace Squid::RHI;
 
     class TextureImporter {
     private:
-        RHI::CommandList transfer_list;
-        RHI::Device *device;
-        std::vector<RHI::BufferHandle> staging_buffers;
+        CommandList transfer_list;
+        Device *device;
+        std::vector<BufferHandle> staging_buffers;
 
     public:
-        TextureImporter(RHI::Device *device, RHI::CommandList list) : device(device), transfer_list(list) {}
+        TextureImporter(Device *device, CommandList list) : device(device), transfer_list(list) {}
 
-        RHI::TextureHandle FromFile(
+        TextureHandle FromFile(
             const std::string &file,
             const std::string &name,
-            RHI::Format format = RHI::FORMAT_R8G8B8A8_UNORM_SRGB,
-            RHI::TextureHandle::Usage usage = RHI::TextureHandle::Usage::SHADER_RESOURCE_VIEW) {
+            Format format = FORMAT_R8G8B8A8_UNORM_SRGB,
+            TextureHandle::Usage usage = TextureHandle::Usage::SHADER_RESOURCE_VIEW) {
 
             PROFILING_SCOPE
 
@@ -36,10 +37,10 @@ namespace Renderer {
             }
 
             // Create a staging cpu accessible GPU buffer
-            RHI::BufferHandle staging_texture;
+            BufferHandle staging_texture;
             staging_texture.cpu_access = true;
             staging_texture.size = image_size;
-            staging_texture.usage = RHI::BufferHandle::Usage::TRANSFER_SRC;
+            staging_texture.usage = BufferHandle::Usage::TRANSFER_SRC;
             device->LoadBuffer(staging_texture);
             staging_buffers.push_back(staging_texture);
 
@@ -52,7 +53,7 @@ namespace Renderer {
             stbi_image_free(pixels);
 
             // Create device local texture
-            RHI::TextureHandle texture;
+            TextureHandle texture;
             texture.height = height;
             texture.width = width;
             texture.depth = 1;
@@ -70,11 +71,11 @@ namespace Renderer {
             return std::move(texture);
         };
 
-        RHI::TextureHandle FromEnvFile(
+        TextureHandle FromEnvFile(
             const std::array<const std::string, 6> &files,
             const std::string &name,
-            RHI::Format format = RHI::FORMAT_R32G32B32A32_FLOAT,
-            RHI::TextureHandle::Usage usage = RHI::TextureHandle::Usage::SHADER_RESOURCE_VIEW) {
+            Format format = FORMAT_R32G32B32A32_FLOAT,
+            TextureHandle::Usage usage = TextureHandle::Usage::SHADER_RESOURCE_VIEW) {
 
             PROFILING_SCOPE
 
@@ -97,10 +98,10 @@ namespace Renderer {
             }
 
             // Create a staging cpu accessible GPU buffer
-            RHI::BufferHandle staging_texture;
+            BufferHandle staging_texture;
             staging_texture.cpu_access = true;
             staging_texture.size = image_data_size * 6;
-            staging_texture.usage = RHI::BufferHandle::Usage::TRANSFER_SRC;
+            staging_texture.usage = BufferHandle::Usage::TRANSFER_SRC;
             device->LoadBuffer(staging_texture);
             staging_buffers.push_back(staging_texture);
 
@@ -123,13 +124,14 @@ namespace Renderer {
             stbi_image_free(face_data_neg_z);
 
             // Create device local texture
-            RHI::TextureHandle texture;
+            TextureHandle texture;
             texture.height = hdr_height;
             texture.width = hdr_width;
             texture.layers = 6;
-            texture.type = RHI::TextureHandle::Type::TEXTURE_CUBE;
+            texture.type = TextureHandle::Type::TEXTURE_CUBE;
             texture.format = format; // 128bit alias 16byte format
             texture.mip_levels = 1;
+            texture.layout = ImageLayout::TRANSFER_DST;
             texture.sample_count = 1;
             texture.usage_flags = usage;
             device->LoadTexture(texture);
@@ -144,7 +146,7 @@ namespace Renderer {
         void Upload() {
             PROFILING_SCOPE
 
-            device->QueueSubmit(RHI::QueueType::GRAPHICS, transfer_list);
+            device->QueueSubmit(QueueType::GRAPHICS, transfer_list);
             for (const auto &buffer : staging_buffers) {
                 device->UnloadBuffer(buffer);
             }

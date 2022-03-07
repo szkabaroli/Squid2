@@ -152,7 +152,7 @@ void ImGui_ImplRHI_CreateDeviceObjects() {
     ubo_descriptor.type = RHI::Descriptor::Type::Uniform;
 
     RHI::Descriptor texture_descriptor;
-    texture_descriptor.binding = 1;
+    texture_descriptor.binding = 0;
     texture_descriptor.count = 1;
     texture_descriptor.shader_stage = RHI::SHADER_STAGE_PIXEL_STAGE;
     texture_descriptor.type = RHI::Descriptor::Type::Sampler;
@@ -320,7 +320,8 @@ void ImGui_ImplRHI_RenderDrawData(ImDrawData *draw_data, const RHI::CommandList 
 
                 g_device->BindScissorRects(list, 1, &scissor);
                 auto tex = *(RHI::TextureHandle *)pcmd->TextureId;
-                // g_device->BindTexture(g_set, 1, tex);
+                
+                //g_device->BindTexture(g_set, 0,  tex);
                 // g_device->BindDescriptorSet(list, g_pso, g_set);
 
                 // Id no set for texture create one
@@ -328,8 +329,7 @@ void ImGui_ImplRHI_RenderDrawData(ImDrawData *draw_data, const RHI::CommandList 
                 if (el == g_texture_sets.end()) {
                     CreateDescriptorSetForTexture(tex);
                 } else {
-
-                    // g_device->BindTexture(el->second, 0, tex);
+                   // g_device->BindTexture(el->second, 0, tex);
                 }
 
                 g_device->BindDescriptorSet(list, g_pso, g_texture_sets[tex.id], 1);

@@ -38,7 +38,9 @@ namespace EditorCore {
             const auto &current_width = renderer->GetFrameWidth();
 
             if (current_width != width || current_height != height) {
-                renderer->SetFrameSize(width, height);
+                // TODO: avoid negative value to passed to this function
+                LOG_INFO("renderer->SetViewportSize({},{})", width, height)
+                renderer->SetViewportSize(width, height);
             }
 
             ImGui::Image(

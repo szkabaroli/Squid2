@@ -88,7 +88,7 @@ namespace RHI {
         VkDebugUtilsMessageTypeFlagsEXT messageType,
         const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
         void *pUserData) {
-        LOG_ERROR("validation layer: {}", pCallbackData->pMessage);
+        LOG_ERROR("{}", pCallbackData->pMessage);
         return VK_FALSE;
     }
 

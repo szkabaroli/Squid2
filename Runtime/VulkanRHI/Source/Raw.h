@@ -323,8 +323,9 @@ namespace RHI {
             return VK_BLEND_FACTOR_DST_COLOR;
         case Blend::DEST_ALPHA:
             return VK_BLEND_FACTOR_DST_ALPHA;
+        default:
+            break;
         }
-
         assert(0 && "Unsupported Blend");
     }
 
@@ -340,8 +341,9 @@ namespace RHI {
             return VK_BLEND_OP_MIN;
         case BlendOp::MAX:
             return VK_BLEND_OP_MAX;
+        default:
+            break;
         }
-
         assert(0 && "Unsupported BlendOP");
     }
 
@@ -353,8 +355,9 @@ namespace RHI {
             return VK_CULL_MODE_BACK_BIT;
         case CullMode::NONE:
             return VK_CULL_MODE_NONE;
+        default:
+            break;
         }
-
         assert(0 && "Unsupported CullMode");
     }
 

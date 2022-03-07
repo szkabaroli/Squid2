@@ -1,7 +1,7 @@
 #include <array>
 
-#include <Public/Renderer/Module.h>
-#include <Public/Renderer/TextureImporter.h>
+#include <Renderer/Module.h>
+#include <Renderer/TextureImporter.h>
 
 #include <Core/Log.h>
 #include <Core/Profiling.h>
@@ -76,11 +76,7 @@ namespace Renderer {
     }
 
     void Module::ResizeRenderTargets() {
-
         device->UnloadTexture(frame_composition);
-
-        frame_composition.height = this->frame_height;
-        frame_composition.width = this->frame_width;
 
         device->LoadTexture(frame_composition);
     }
@@ -128,7 +124,7 @@ namespace Renderer {
         frame_composition.usage_flags =
             RHI::TextureHandle::Usage::SHADER_RESOURCE_VIEW | RHI::TextureHandle::Usage::RENDER_TARGET_VIEW;
         device->LoadTexture(frame_composition);
-        frame_composition.layout = RHI::ImageLayout::SHADER_RESOURCE;
+        frame_composition.layout = RHI::ImageLayout::UNDEFINED;
         device->SetName(frame_composition, "Frame Target");
 
         frame_ds.height = frame_height;
@@ -137,6 +133,7 @@ namespace Renderer {
         frame_ds.format = RHI::FORMAT_D24_UNORM_S8_UINT;
         frame_ds.mip_levels = 1;
         frame_ds.sample_count = 1;
+        frame_ds.layout = ImageLayout::UNDEFINED;
         frame_ds.usage_flags = RHI::TextureHandle::Usage::DEPTH_STENCIL_VIEW;
         device->LoadTexture(frame_ds);
         device->SetName(frame_ds, "Frame Target DS");
@@ -146,11 +143,15 @@ namespace Renderer {
                                      RHI::RenderPassAttachment::LOAD_OP_CLEAR,
                                      &frame_composition,
                                      RHI::RenderPassAttachment::STORE_OP_STORE,
-                                     RHI::ImageLayout::SHADER_RESOURCE,
+                                     RHI::ImageLayout::UNDEFINED,
                                      RHI::ImageLayout::SHADER_RESOURCE};
 
         composition_pass.ds = {RHI::RenderPassAttachment::DEPTH_STENCIL_ATTACHMENT,
-                               RHI::RenderPassAttachment::LOAD_OP_CLEAR, &frame_ds};
+                               RHI::RenderPassAttachment::LOAD_OP_CLEAR,
+                               &frame_ds,
+                               RHI::RenderPassAttachment::STORE_OP_STORE,
+                               RHI::ImageLayout::UNDEFINED,
+                               RHI::ImageLayout::GENERAL};
 
         device->LoadRenderPass(composition_pass);
         device->SetName(composition_pass, "Frame Target Render Pass");
@@ -242,16 +243,18 @@ namespace Renderer {
         device->BeginRenderPassEXP(list, composition_pass);
         // Draw stuff
         RHI::Viewport vp;
-        vp.height = 2000;
-        vp.width = 2000;
+        vp.height = 1000;
+        vp.width = 1000;
         vp.x = 0;
         vp.y = 0;
         vp.min_depth = 0.0f;
         vp.max_depth = 1.0f;
 
+        LOG("{} {}", this->frame_height, this->frame_width)
+
         RHI::Rect sc;
-        sc.height = 2000;
-        sc.width = 2000;
+        sc.height = 1000;
+        sc.width = 1000;
         sc.x = 0;
         sc.y = 0;
 

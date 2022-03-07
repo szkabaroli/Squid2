@@ -604,6 +604,18 @@ namespace RHI {
         swapchains[handle.id]->Present(queues[context->present_queue_family], *context.get());
     };
 
+    void VulkanDevice::ResizeTexture(const TextureHandle &handle, u32 width, u32 height) {
+        LOG("resize texture")
+
+        auto &context = swap_contexts[current_backbuffer_id];
+
+        textures.erase(handle.id);
+        textures.insert(std::pair(handle.id, std::make_unique<VulkanTexture>(handle, raw_device)));
+        // auto texture_binding = texture_bindings[handle.id];
+        // handle.id = RANDOM_32;
+        // descriptor_sets[texture_binding.first]->SetTexture(texture_binding.second, handle);
+    };
+
     void *VulkanDevice::MapBuffer(const BufferHandle &handle) {
         assert(this->HasBuffer(handle));
 

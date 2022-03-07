@@ -7,8 +7,8 @@
 #include <Core/ECS/Scene.h>
 
 #define GLM_FORCE_RADIANS
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/glm.hpp>
 
 #include "Mesh.h"
 
@@ -51,10 +51,10 @@ namespace Renderer {
         inline u32 GetFrameHeight() const { return this->frame_height; }
         inline u32 GetFrameWidth() const { return this->frame_width; }
 
-        inline void SetFrameSize(u32 height, u32 width) {
+        inline void SetViewportSize(u32 width, u32 height) {
             this->frame_height = height;
             this->frame_width = width;
-           // resize = true;
+            resize = true; // disable to disable resizing
         }
 
         bool resize = false;
@@ -64,8 +64,8 @@ namespace Renderer {
         void UpdateUBO();
         void CreateRenderTargets();
 
-        u32 frame_height = 2000;
-        u32 frame_width = 2000;
+        u32 frame_height = 100;
+        u32 frame_width = 100;
 
         std::shared_ptr<RHI::Module> rhi;
         std::unique_ptr<RHI::Device> device;

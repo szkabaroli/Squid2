@@ -107,16 +107,17 @@ int EngineLoop::Start() {
                 running = false;
         }
 
+        // Rebuild swapchain if needed (ex on resize)
         if (swap_chain_rebuild) {
             renderer->GetDevice()->RebuildSwapchain(renderer->GetSwapchain());
             swap_chain_rebuild = false;
         }
 
+        // Resize viewport render target on viewporet size change
         if (renderer->resize) {
             renderer->ResizeRenderTargets();
             renderer->resize = false;
         }
-        
 
         renderer->GetDevice()->BeginFrameEXP(renderer->GetSwapchain());
 

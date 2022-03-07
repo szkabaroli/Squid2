@@ -117,6 +117,7 @@ namespace RHI {
         void QueueSubmit(QueueType queue, const CommandList &list) override;
 
         void RebuildSwapchain(const SwapchainHandle &handle) override;
+        void ResizeTexture(const TextureHandle &handle, u32 width, u32 height) override;
 
         ~VulkanDevice();
 
@@ -149,15 +150,17 @@ namespace RHI {
         std::map<uint32_t, VkQueue> queues;
 
         // Map of resource handle ids and abstracted vulkan objects
-        std::unordered_map<uint64_t, std::unique_ptr<VulkanBuffer>> buffers;
-        std::unordered_map<uint64_t, std::unique_ptr<VulkanTexture>> textures;
-        std::unordered_map<uint64_t, std::unique_ptr<VulkanComputePipeline>> compute_pipelines;
-        std::unordered_map<uint64_t, std::unique_ptr<VulkanGraphicsPipeline>> gfx_pipelines;
-        std::unordered_map<uint64_t, std::unique_ptr<VulkanDescriptorSet>> descriptor_sets;
-        std::unordered_map<uint64_t, std::unique_ptr<VulkanSwapchain>> swapchains;
-        std::unordered_map<uint64_t, std::unique_ptr<VulkanRenderTarget>> render_targets;
+        std::unordered_map<u64, std::unique_ptr<VulkanBuffer>> buffers;
+        std::unordered_map<u64, std::unique_ptr<VulkanTexture>> textures;
+        std::unordered_map<u64, std::unique_ptr<VulkanComputePipeline>> compute_pipelines;
+        std::unordered_map<u64, std::unique_ptr<VulkanGraphicsPipeline>> gfx_pipelines;
+        std::unordered_map<u64, std::unique_ptr<VulkanDescriptorSet>> descriptor_sets;
+        std::unordered_map<u64, std::unique_ptr<VulkanSwapchain>> swapchains;
+        std::unordered_map<u64, std::unique_ptr<VulkanRenderTarget>> render_targets;
 
-        std::unordered_map<uint64_t, VkRenderPass> render_passes;
+        // Utility mappings
+        std::unordered_map<u64, VkRenderPass> render_passes;
+        std::unordered_map<u32, std::pair<u64, u32>> texture_bindings;
 
         // Swapchain and backbuffer render taraget mapping is 1 <-> 1
         // backbuffer_id -> Swapchain Context

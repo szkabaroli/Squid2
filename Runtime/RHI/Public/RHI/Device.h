@@ -62,10 +62,10 @@ namespace RHI {
 
         // == Binding ==================================================================
 
-        virtual void BindScissorRects(const CommandList &cmd, uint32_t rects_count, const Rect *rects) = 0;
-        virtual void BindViewports(const CommandList &cmd, uint32_t viewports_count, const Viewport *pViewports) = 0;
+        virtual void BindScissorRects(const CommandList &cmd, u32 rects_count, const Rect *rects) = 0;
+        virtual void BindViewports(const CommandList &cmd, u32 viewports_count, const Viewport *pViewports) = 0;
 
-        virtual void BindVertexBuffer(const CommandList &cmd, const BufferHandle &vertex_buffer, uint32_t slot) = 0;
+        virtual void BindVertexBuffer(const CommandList &cmd, const BufferHandle &vertex_buffer, u32 slot) = 0;
         virtual void BindIndexBuffer(
             const CommandList &cmd,
             const BufferHandle &indexBuffer,
@@ -79,7 +79,7 @@ namespace RHI {
         // == Draw, Dispatch ==============================================================
 
         virtual void
-        DrawIndexed(const CommandList &cmd, uint32_t index_count, uint32_t start_index, uint32_t vertex_offset) = 0;
+        DrawIndexed(const CommandList &cmd, u32 index_count, u32 start_index, u32 vertex_offset) = 0;
 
         // virtual void
         // Dispatch(const CommandList &cmd, uint32_t thread_group_x, uint32_t thread_group_y, uint32_t thread_group_z) =
@@ -100,11 +100,13 @@ namespace RHI {
         virtual void Barrier(const CommandList &cmd, const TextureHandle &handle, ImageLayout new_layout) = 0;
         // virtual void Barrier(const GPUBarrier* barriers, uint32_t numBarriers) = 0;
 
-        virtual void BindBuffer(const DescriptorSetHandle &set, uint32_t bindng, const BufferHandle &handle) = 0;
-        virtual void BindTexture(const DescriptorSetHandle &set, uint32_t bindng, const TextureHandle &handle) = 0;
+        virtual void BindBuffer(const DescriptorSetHandle &set, u32 bindng, const BufferHandle &handle) = 0;
+        virtual void BindTexture(const DescriptorSetHandle &set, u32 bindng, const TextureHandle &handle) = 0;
 
         virtual void *MapBuffer(const BufferHandle &handle) = 0;
         virtual void UnmapBuffer(const BufferHandle &handle) = 0;
+
+        virtual void ResizeTexture(const TextureHandle &handle, u32 width, u32 height) = 0;
 
         virtual void RebuildSwapchain(const SwapchainHandle &handle) = 0;
     };

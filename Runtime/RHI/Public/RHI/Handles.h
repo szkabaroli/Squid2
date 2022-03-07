@@ -22,6 +22,7 @@ namespace RHI {
         DEPTH_STENCIL,          // depth stencil, write enabled
         DEPTH_STENCIL_READONLY, // depth stencil, read only
         SHADER_RESOURCE,        // shader resource, read only
+        SHADER_RESOURCE_READONLY,
         UNORDERED_ACCESS,       // shader resource, write enabled
         TRANSFER_SRC,           // copy from
         TRANSFER_DST,           // copy to
@@ -325,6 +326,17 @@ namespace RHI {
         bool enabled = true;
         bool alpha_to_coverage = false;
         RenderTargetBlend rt_blends[8];
+    };
+
+    struct PipelineResource {
+        enum Type : u8 { StorageBuffer = 1, UniformBuffer = 2, Sampler = 3 } type;
+        u32 shader_stage;
+        u16 count;
+        u16 binding;
+    };
+
+    struct PipelineResourcesHandle : Handle {
+        std::vector<PipelineResource> descriptors;
     };
 
     struct GraphicsPipelineHandle : Handle {
